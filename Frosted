@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Animal Gold</title>
+  <style>
+    body { font-family: Arial; background:#111; color:#eee; padding:20px }
+    button { margin:5px; padding:8px }
+    .box { border:1px solid #444; padding:10px; margin-bottom:15px }
+  </style>
+</head>
+<body>
+
+<h1>🐾 Animal Gold</h1>
+
+<div class="box">
+  <h3>💰 Gold : <span id="gold">0</span></h3>
+  <button onclick="collect()">Collecter</button>
+</div>
+
+<div class="box">
+  <h3>🦁 Animaux (Mammifères)</h3>
+  <p>Lions : <span id="lions">0</span></p>
+  <p>Production : <span id="rate">0</span> gold / heure</p>
+  <button onclick="buyLion()">Acheter un Lion (100 gold)</button>
+</div>
+
+<div class="box">
+  <h3>🚀 Boost</h3>
+  <p>Boost actif : <span id="boost">x1</span></p>
+  <button onclick="buyBoost()">Pack Boost x2 (200 gold / 1h)</button>
+</div>
+
+<div class="box">
+  <h3>📺 Publicité</h3>
+  <button onclick="watchAd()">Regarder une vidéo (+50 gold)</button>
+</div>
+
+<div class="box">
+  <h3>💸 Withdraw</h3>
+  <button onclick="withdraw()">Demander un retrait</button>
+</div>
+
+<script>
+let gold = 0;
+let lions = 0;
+let boost = 1;
+let lastUpdate = Date.now();
+
+// Calcul passif
+function updateGold() {
+  const now = Date.now();
+  const diff = (now - lastUpdate) / 3600000;
+  const income = lions * 10 * boost * diff;
+  gold += income;
+  lastUpdate = now;
+  render();
+}
+
+// Acheter un animal
+function buyLion() {
+  updateGold();
+  if (gold >= 100) {
+    gold -= 100;
+    lions++;
+  } else alert("Pas assez de gold");
+  render();
+}
+
+// Boost
+function buyBoost() {
+  updateGold();
+  if (gold >= 200) {
+    gold -= 200;
+    boost = 2;
+    setTimeout(() => boost = 1, 3600000);
+  } else alert("Pas assez de gold");
+  render();
+}
+
+// Pub
+function watchAd() {
+  gold += 50;
+  render();
+}
+
+// Collect
+function collect() {
+  updateGold();
+}
+
+// Withdraw
+function withdraw() {
+  updateGold();
+  if (gold >= 1000) {
+    alert("Demande de retrait envoyée !");
+    gold = 0;
+  } else {
+    alert("Minimum 1000 gold");
+  }
+}
+
+// Affichage
+function render() {
+  document.getElementById("gold").innerText = gold.toFixed(0);
+  document.getElementById("lions").innerText = lions;
+  document.getElementById("rate").innerText = lions * 10 * boost;
+  document.getElementById("boost").innerText = "x" + boost;
+}
+
+setInterval(updateGold, 5000);
+render();
+</script>
+
+</body>
+</html>
